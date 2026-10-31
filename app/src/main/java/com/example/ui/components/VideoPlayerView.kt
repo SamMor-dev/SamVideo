@@ -39,6 +39,7 @@ import kotlin.math.roundToInt
  * Componente que encapsula o PlayerView da AndroidX Media3 com SurfaceView
  * acelerado diretamente por hardware e suporte a gestos de toque modernos.
  */
+@androidx.media3.common.util.UnstableApi
 @Composable
 fun VideoPlayerView(
     viewModel: PlayerViewModel,

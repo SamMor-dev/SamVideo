@@ -1,5 +1,6 @@
 package com.example.player
 
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 
 /*
@@ -11,6 +12,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 /**
  * Modos de adaptação de proporção (Aspect Ratio) no SamVideo.
  */
+@UnstableApi
 enum class AspectRatioMode(val label: String, val resizeMode: Int) {
     /**
      * Ajusta o vídeo inteiro na tela preservando a proporção original (com barras pretas se necessário).

@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
  * garantindo aceleração por hardware pura (sem fallbacks pesados legados em C/C++)
  * e baixo consumo de energia para dispositivos modernos (Galaxy A, etc).
  */
+@androidx.media3.common.util.UnstableApi
 class PlayerViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = VideoRepository(application)

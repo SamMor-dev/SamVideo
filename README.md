@@ -129,7 +129,10 @@ app/src/main/java/com/example/
 │   └── theme/
 │       ├── Color.kt                    # Paletas sólidas sem gradientes (Dark, Light, Slate Blue)
 │       ├── Theme.kt                    # Configuração de tema Material Design 3 e insets
-│       └── ThemeMode.kt                # Enum com os 3 modos de aparência visual
+│       ├── ThemeMode.kt                # Enum com os 3 modos de aparência visual
+│       └── Type.kt                     # Tipografia e estilos de texto Material 3
+└── viewmodel/
+    └── PlayerViewModel.kt        # ViewModel reativo do player e gerenciador de estado
 sam_video_icon.svg                     # Ícone vetorial oficial editável (SVG puro)
 art/sam_video_icon.svg                 # Cópia do ícone vetorial na pasta de arte
 ```
