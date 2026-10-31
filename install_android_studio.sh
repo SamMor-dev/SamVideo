@@ -1,97 +1,150 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# SamVideo - Script de Instalação Automatizada do Android Studio
-# Autor: Sam Moreno
-# Licença: BSD 2-Clause
-# ==============================================================================
+# InstallStudio.sh - Gerenciador Interativo de IDE & Aceleração KVM
+# Licença: BSD 2-Clause (Sam Moreno)
 
-set -e
+set -euo pipefail
 
-GREEN='\033[0;32m'
-CYAN='\033[0;36m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+INSTALL_DIR="$HOME/.local/share/android-studio"
+DESKTOP_ENTRY="$HOME/.local/share/applications/android-studio.desktop"
 
-echo -e "${CYAN}====================================================${NC}"
-echo -e "${CYAN}   SamVideo - Instalador do Android Studio          ${NC}"
-echo -e "${CYAN}   Autor: Sam Moreno | Licença: BSD 2-Clause        ${NC}"
-echo -e "${CYAN}====================================================${NC}\n"
+# ==================== MÓDULO KVM & HARDWARE ====================
+setup_kvm() {
+    echo ""
+    echo "=== [KVM] Verificando e Configurando Aceleração de Hardware ==="
 
-# 1. Verifica se está rodando em ambiente Linux
-if [[ "$OSTYPE" != "linux-gnu"* ]]; then
-    echo -e "${YELLOW}[AVISO] Este script foi desenvolvido principalmente para Linux (Ubuntu/Debian/Fedora/Arch).${NC}"
-    echo -e "No macOS ou Windows, baixe o instalador oficial diretamente em: https://developer.android.com/studio"
-    exit 1
-fi
+    # 1. Checa suporte a virtualização no processador
+    if ! grep -E -q '(vmx|svm)' /proc/cpuinfo; then
+        echo "[AVISO] Sua CPU não possui suporte a virtualização (VMX/SVM) ou ela está desativada na BIOS."
+        echo "O emulador Android poderá rodar mais lento."
+        return
+    fi
+    echo "[OK] Suporte a virtualização de hardware detectado na CPU."
 
-echo -e "${GREEN}[1/4] Verificando dependências de sistema (Java 17 e bibliotecas)...${NC}"
+    # 2. Identifica o gerenciador de pacotes e instala dependências do KVM
+    if command -v apt &>/dev/null; then
+        echo "[KVM] Instalando pacotes KVM via apt..."
+        sudo apt update -y && sudo apt install -y qemu-kvm libvirt-daemon-system build-essential
+    elif command -v dnf &>/dev/null; then
+        echo "[KVM] Instalando pacotes KVM via dnf..."
+        sudo dnf install -y qemu-kvm libvirt
+    elif command -v pacman &>/dev/null; then
+        echo "[KVM] Instalando pacotes KVM via pacman..."
+        sudo pacman -S --needed --noconfirm qemu-full virt-manager
+    else
+        echo "[AVISO] Gerenciador de pacotes não reconhecido automaticamente. Verifique se o KVM está instalado."
+    fi
 
-# Detecta gerenciador de pacotes
-if command -v apt-get &> /dev/null; then
-    echo "Gerenciador APT detectado (Ubuntu/Debian)..."
-    sudo apt-get update -y
-    sudo apt-get install -y openjdk-17-jdk curl wget unzip libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386 2>/dev/null || \
-    sudo apt-get install -y openjdk-17-jdk curl wget unzip
-elif command -v dnf &> /dev/null; then
-    echo "Gerenciador DNF detectado (Fedora/RHEL)..."
-    sudo dnf install -y java-17-openjdk-devel curl wget unzip
-elif command -v pacman &> /dev/null; then
-    echo "Gerenciador Pacman detectado (Arch Linux)..."
-    sudo pacman -Sy --noconfirm jdk17-openjdk curl wget unzip
-else
-    echo -e "${YELLOW}[AVISO] Gerenciador de pacotes não identificado. Certifique-se de ter o JDK 17 e curl instalados.${NC}"
-fi
+    # 3. Adiciona o usuário atual ao grupo kvm (para permissões do emulador)
+    if grep -q '^kvm:' /etc/group; then
+        echo "[KVM] Adicionando o usuário '$USER' ao grupo 'kvm'..."
+        sudo usermod -aG kvm "$USER"
+        echo "[OK] Usuário adicionado ao grupo 'kvm'. (Nota: Pode ser necessário fazer logoff para aplicar a permissão de grupo)."
+    fi
 
-echo -e "\n${GREEN}[2/4] Verificando método de instalação recomendado...${NC}"
+    # 4. Ajusta permissões do nó /dev/kvm se ele existir
+    if [ -e /dev/kvm ]; then
+        sudo chown root:kvm /dev/kvm || true
+    fi
 
-# Opção A: Snap (Se disponível, é o método mais limpo e auto-atualizável)
-if command -v snap &> /dev/null; then
-    echo -e "${CYAN}Snap detectado! Instalando Android Studio via Snap (canal stable)...${NC}"
-    sudo snap install android-studio --classic
-    echo -e "${GREEN}✓ Android Studio instalado com sucesso via Snap!${NC}"
-    echo -e "Você pode executá-lo a qualquer momento digitando: ${CYAN}android-studio${NC}"
-    exit 0
-fi
+    echo "=== [KVM] Aceleração de Emulação Pronta! ==="
+}
 
-# Opção B: Download e Extração direta do tarball oficial em /opt
-STUDIO_DIR="/opt/android-studio"
-INSTALL_URL="https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2024.2.1.12/android-studio-2024.2.1.12-linux.tar.gz"
-TEMP_TAR="/tmp/android-studio.tar.gz"
+# ==================== MÓDULO DE INSTALAÇÃO ====================
+install_studio() {
+    echo ""
+    echo "=== Modo de Instalação/Configuração ==="
+    
+    local archive
+    archive=$(ls android-studio-*.tar.gz 2>/dev/null | head -n 1 || true)
 
-echo -e "\n${GREEN}[3/4] Baixando a versão oficial mais recente do Android Studio...${NC}"
-wget -O "$TEMP_TAR" "$INSTALL_URL" --show-progress
+    if [ -z "$archive" ]; then
+        echo "[ERRO] Nenhum arquivo 'android-studio-*.tar.gz' foi encontrado nesta pasta."
+        echo "Por favor, baixe o pacote do Android Studio e coloque-o ao lado deste script."
+        exit 1
+    fi
 
-echo -e "\n${GREEN}[4/4] Instalando em $STUDIO_DIR...${NC}"
-sudo rm -rf "$STUDIO_DIR"
-sudo tar -xzf "$TEMP_TAR" -C /opt/
-rm -f "$TEMP_TAR"
+    # Configura o KVM antes de extrair
+    setup_kvm
 
-# Cria atalho no PATH
-sudo ln -sf "$STUDIO_DIR/bin/studio.sh" /usr/local/bin/android-studio
+    echo ""
+    echo "[1/3] Extraindo '$archive' para $INSTALL_DIR..."
+    mkdir -p "$INSTALL_DIR"
+    tar -xzf "$archive" -C "$INSTALL_DIR" --strip-components=1
 
-# Cria lançador .desktop para o menu de aplicativos
-DESKTOP_FILE="$HOME/.local/share/applications/android-studio.desktop"
-mkdir -p "$HOME/.local/share/applications"
-cat << EOF > "$DESKTOP_FILE"
+    echo "[2/3] Criando atalho no menu de aplicativos (.desktop)..."
+    mkdir -p "$HOME/.local/share/applications"
+
+    cat <<EOF > "$DESKTOP_ENTRY"
 [Desktop Entry]
 Version=1.0
 Type=Application
 Name=Android Studio
-Comment=The Official Android IDE
-Exec=/opt/android-studio/bin/studio.sh %f
-Icon=/opt/android-studio/bin/studio.png
+Icon=$INSTALL_DIR/bin/studio.png
+Exec="$INSTALL_DIR/bin/studio.sh" %f
+Comment=The Official IDE for Android
 Categories=Development;IDE;
 Terminal=false
 StartupWMClass=jetbrains-studio
 EOF
 
-chmod +x "$DESKTOP_FILE"
+    echo "[3/3] Aplicando permissões de execução..."
+    chmod +x "$INSTALL_DIR/bin/studio.sh"
+    chmod +x "$DESKTOP_ENTRY"
 
-echo -e "\n${CYAN}====================================================${NC}"
-echo -e "${GREEN}✓ Instalação concluída com sucesso!${NC}"
-echo -e "Para iniciar o Android Studio:"
-echo -e "  1. Digite no terminal: ${CYAN}android-studio${NC}"
-echo -e "  2. Ou abra pelo menu do seu sistema: 'Android Studio'"
-echo -e "  3. No menu inicial do Android Studio, escolha 'Open' e selecione a pasta do ${CYAN}SamVideo${NC}."
-echo -e "${CYAN}====================================================${NC}"
+    echo ""
+    echo "=== Instalação e Otimização Concluídas com Sucesso! ==="
+    echo "Você já pode abrir o Android Studio e criar Emuladores Acelerados por KVM!"
+}
+
+# ==================== MÓDULO DE DESINSTALAÇÃO ====================
+uninstall_studio() {
+    echo ""
+    echo "=== Modo de Desinstalação ==="
+
+    if [ -d "$INSTALL_DIR" ]; then
+        echo "[1/2] Removendo arquivos da IDE em $INSTALL_DIR..."
+        rm -rf "$INSTALL_DIR"
+    else
+        echo "[1/2] Pasta de instalação não encontrada. Pulando..."
+    fi
+
+    if [ -f "$DESKTOP_ENTRY" ]; then
+        echo "[2/2] Removendo atalho do menu..."
+        rm -f "$DESKTOP_ENTRY"
+    else
+        echo "[2/2] Atalho do menu não encontrado. Pulando..."
+    fi
+
+    echo ""
+    echo "=== Desinstalação concluída! O sistema está limpo. ==="
+}
+
+# ==================== MENU INTERATIVO ====================
+echo "===================================================="
+echo "  Gerenciador Android Studio & KVM (Sam Dev Suite)  "
+echo "===================================================="
+echo "Escolha uma opção digitando o número:"
+echo ""
+
+PS3="Digite o número da sua opção (1-3): "
+options=("Instalar Studio + Aceleração KVM" "Desinstalar Studio" "Sair")
+
+select opt in "${options[@]}"; do
+    case "$opt" in
+        "Instalar Studio + Aceleração KVM")
+            install_studio
+            break
+            ;;
+        "Desinstalar Studio")
+            uninstall_studio
+            break
+            ;;
+        "Sair")
+            echo "Saindo sem alterações."
+            exit 0
+            ;;
+        *)
+            echo "Opção inválida: $REPLY. Escolha 1, 2 ou 3."
+            ;;
+    esac
+done
