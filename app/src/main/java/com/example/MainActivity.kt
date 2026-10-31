@@ -23,10 +23,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.collectAsState
 import com.example.model.VideoItem
 import com.example.ui.screens.PlayerScreen
 import com.example.ui.screens.VideoListScreen
-import com.example.ui.theme.BackgroundDark
 import com.example.ui.theme.MyApplicationTheme
 import com.example.viewmodel.PlayerViewModel
 
@@ -54,10 +54,11 @@ class MainActivity : ComponentActivity() {
         handleIntent(intent)
 
         setContent {
-            MyApplicationTheme {
+            val currentTheme by playerViewModel.themeMode.collectAsState()
+            MyApplicationTheme(themeMode = currentTheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = BackgroundDark
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
                 ) {
                     AnimatedContent(
                         targetState = currentScreen,

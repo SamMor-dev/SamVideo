@@ -68,6 +68,14 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
+    // Modo de tema visual (Escuro, Claro, Azul Sóbrio)
+    private val _themeMode = MutableStateFlow(com.example.ui.theme.AppThemeMode.DARK)
+    val themeMode: StateFlow<com.example.ui.theme.AppThemeMode> = _themeMode.asStateFlow()
+
+    fun setThemeMode(mode: com.example.ui.theme.AppThemeMode) {
+        _themeMode.value = mode
+    }
+
     // Job para polling suave de posição e buffer do vídeo
     private var progressTrackerJob: Job? = null
     // Job para auto-ocultação dos controles da interface após inatividade

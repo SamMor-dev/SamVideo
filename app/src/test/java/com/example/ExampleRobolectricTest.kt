@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.example.model.VideoItem
 import com.example.player.AspectRatioMode
+import com.example.ui.theme.AppThemeMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -54,5 +55,14 @@ class ExampleRobolectricTest {
         assertEquals(AspectRatioMode.ZOOM, zoom)
         assertEquals(AspectRatioMode.FILL, fill)
         assertEquals(AspectRatioMode.FIT, backToFit)
+    }
+
+    @Test
+    fun `theme modes titles and availability`() {
+        val modes = AppThemeMode.entries
+        assertEquals(3, modes.size)
+        assertEquals("Escuro", AppThemeMode.DARK.title)
+        assertEquals("Claro", AppThemeMode.LIGHT.title)
+        assertEquals("Azul Sóbrio", AppThemeMode.SLATE_BLUE.title)
     }
 }

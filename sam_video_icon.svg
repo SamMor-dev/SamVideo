@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SamVideo - Official App Icon
+  Design: Letter 'S' integrated with Video Film & Play Triangle
+  Author: Sam Moreno
+  License: BSD 2-Clause License
+  Ready for editing in Figma, Adobe Illustrator, Inkscape
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Solid clean styling for professional brand identity -->
+    <style>
+      .bg-rect { fill: #0F172A; }
+      .s-body-primary { fill: #2563EB; }
+      .s-body-secondary { fill: #38BDF8; }
+      .play-accent { fill: #FFFFFF; }
+      .film-sprocket { fill: #0F172A; }
+    </style>
+  </defs>
+
+  <!-- Layer: Background Squircle -->
+  <rect id="background" class="bg-rect" x="32" y="32" width="448" height="448" rx="108" ry="108" />
+
+  <!-- Layer: Letter 'S' - Top Film Curve -->
+  <path id="top-curve-film" class="s-body-secondary"
+        d="M 372 136
+           C 340 96 280 88 232 88
+           C 152 88 112 136 112 196
+           C 112 248 152 272 216 292
+           L 248 302
+           C 192 284 172 264 172 232
+           C 172 196 196 156 244 156
+           C 284 156 320 172 344 196
+           Z" />
+
+  <!-- Layer: Film Sprocket Holes (Video characteristic on upper S) -->
+  <g id="film-perforations">
+    <rect class="film-sprocket" x="144" y="148" width="16" height="24" rx="4" transform="rotate(-15 152 160)" />
+    <rect class="film-sprocket" x="184" y="116" width="16" height="24" rx="4" transform="rotate(-5 192 128)" />
+    <rect class="film-sprocket" x="236" y="104" width="24" height="16" rx="4" />
+    <rect class="film-sprocket" x="296" y="112" width="16" height="24" rx="4" transform="rotate(10 304 124)" />
+  </g>
+
+  <!-- Layer: Letter 'S' - Bottom Curve -->
+  <path id="bottom-curve" class="s-body-primary"
+        d="M 140 376
+           C 172 416 232 424 280 424
+           C 360 424 400 376 400 316
+           C 400 264 360 240 296 220
+           L 264 210
+           C 320 228 340 248 340 280
+           C 340 316 316 356 268 356
+           C 228 356 192 340 168 316
+           Z" />
+
+  <!-- Layer: Video Play Triangle integrated into center core of S -->
+  <g id="center-play-triangle">
+    <!-- Play button shape nestled dynamically inside S flow -->
+    <path class="play-accent"
+          d="M 230 206
+             C 230 198 238 193 245 197
+             L 325 247
+             C 332 251 332 261 325 265
+             L 245 315
+             C 238 319 230 314 230 306
+             Z" />
+  </g>
+</svg>

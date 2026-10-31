@@ -41,9 +41,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.ui.components.PlayerControlsOverlay
 import com.example.ui.components.VideoPlayerView
-import com.example.ui.theme.BackgroundDark
-import com.example.ui.theme.ErrorRed
-import com.example.ui.theme.PrimaryCyan
 import com.example.viewmodel.PlayerViewModel
 
 /*
@@ -159,8 +156,9 @@ fun PlayerScreen(
                     .align(Alignment.Center)
                     .padding(32.dp),
                 shape = RoundedCornerShape(16.dp),
-                color = BackgroundDark.copy(alpha = 0.95f),
-                tonalElevation = 8.dp
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 8.dp,
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
@@ -168,29 +166,29 @@ fun PlayerScreen(
                 ) {
                     Text(
                         text = "Aviso de Reprodução",
-                        color = ErrorRed,
+                        color = MaterialTheme.colorScheme.error,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = uiState.errorMessage ?: "",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(20.dp))
-                    Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(
                             onClick = onNavigateBack
                         ) {
-                            Text("Voltar", color = Color.White)
+                            Text("Voltar", color = MaterialTheme.colorScheme.onSurface)
                         }
                         Button(
                             onClick = { viewModel.retry() },
-                            colors = ButtonDefaults.buttonColors(containerColor = PrimaryCyan)
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                         ) {
-                            Text("Tentar Novamente", color = Color.Black, fontWeight = FontWeight.Bold)
+                            Text("Tentar Novamente", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                         }
                     }
                 }

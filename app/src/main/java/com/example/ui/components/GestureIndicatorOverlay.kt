@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.FastRewind
 import androidx.compose.material.icons.rounded.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,8 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.PlayerControlsBg
-import com.example.ui.theme.PrimaryCyan
 
 /*
  * Copyright (c) 2026, Sam Moreno.
@@ -54,9 +53,11 @@ fun GestureIndicatorOverlay(
     ) {
         if (feedback == null) return@AnimatedVisibility
 
+        val soberAccent = MaterialTheme.colorScheme.primary
+
         Box(
             modifier = Modifier
-                .background(PlayerControlsBg, shape = RoundedCornerShape(16.dp))
+                .background(Color(0xE61E2430), shape = RoundedCornerShape(16.dp))
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -66,7 +67,7 @@ fun GestureIndicatorOverlay(
                         Icon(
                             imageVector = Icons.Rounded.VolumeUp,
                             contentDescription = "Volume",
-                            tint = PrimaryCyan,
+                            tint = soberAccent,
                             modifier = Modifier.size(36.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -82,7 +83,7 @@ fun GestureIndicatorOverlay(
                             modifier = Modifier
                                 .height(4.dp)
                                 .size(width = 100.dp, height = 4.dp),
-                            color = PrimaryCyan,
+                            color = soberAccent,
                             trackColor = Color.White.copy(alpha = 0.2f)
                         )
                     }
@@ -92,7 +93,7 @@ fun GestureIndicatorOverlay(
                         Icon(
                             imageVector = Icons.Rounded.BrightnessMedium,
                             contentDescription = "Brilho",
-                            tint = PrimaryCyan,
+                            tint = soberAccent,
                             modifier = Modifier.size(36.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -108,7 +109,7 @@ fun GestureIndicatorOverlay(
                             modifier = Modifier
                                 .height(4.dp)
                                 .size(width = 100.dp, height = 4.dp),
-                            color = PrimaryCyan,
+                            color = soberAccent,
                             trackColor = Color.White.copy(alpha = 0.2f)
                         )
                     }
@@ -118,7 +119,7 @@ fun GestureIndicatorOverlay(
                         Icon(
                             imageVector = if (feedback.isForward) Icons.Rounded.FastForward else Icons.Rounded.FastRewind,
                             contentDescription = if (feedback.isForward) "Avançar" else "Retroceder",
-                            tint = PrimaryCyan,
+                            tint = soberAccent,
                             modifier = Modifier.size(40.dp)
                         )
                         Spacer(modifier = Modifier.height(4.dp))

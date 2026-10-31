@@ -4,8 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,7 +50,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -60,8 +57,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.player.PlaybackUiState
-import com.example.ui.theme.AccentPurple
-import com.example.ui.theme.PrimaryCyan
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -89,6 +84,8 @@ fun PlayerControlsOverlay(
     var seekPositionMs by remember { mutableFloatStateOf(0f) }
     var showSpeedMenu by remember { mutableStateOf(false) }
 
+    val accentColor = MaterialTheme.colorScheme.primary
+
     AnimatedVisibility(
         visible = uiState.isControlsVisible,
         enter = fadeIn(),
@@ -98,16 +95,7 @@ fun PlayerControlsOverlay(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.85f),
-                            Color.Transparent,
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.88f)
-                        )
-                    )
-                )
+                .background(Color.Black.copy(alpha = 0.55f))
         ) {
             // === BARRA SUPERIOR (Topo) ===
             Row(
@@ -115,6 +103,7 @@ fun PlayerControlsOverlay(
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
+                    .background(Color.Black.copy(alpha = 0.45f))
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -134,7 +123,7 @@ fun PlayerControlsOverlay(
                 Text(
                     text = uiState.videoTitle.ifEmpty { "Reproduzindo" },
                     color = Color.White,
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -144,8 +133,8 @@ fun PlayerControlsOverlay(
                 // Botão de Proporção de Tela (Aspect Ratio)
                 Surface(
                     onClick = onAspectRatioClick,
-                    shape = RoundedCornerShape(20.dp),
-                    color = Color.White.copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(8.dp),
+                    color = Color.White.copy(alpha = 0.12f),
                     modifier = Modifier
                         .padding(horizontal = 4.dp)
                         .testTag("player_aspect_ratio_button")
@@ -157,7 +146,7 @@ fun PlayerControlsOverlay(
                         Icon(
                             imageVector = Icons.Rounded.AspectRatio,
                             contentDescription = "Aspect Ratio",
-                            tint = PrimaryCyan,
+                            tint = accentColor,
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -178,7 +167,7 @@ fun PlayerControlsOverlay(
                     Icon(
                         imageVector = Icons.Rounded.ScreenRotation,
                         contentDescription = "Girar Tela",
-                        tint = if (uiState.isPortraitLocked) AccentPurple else Color.White
+                        tint = if (uiState.isPortraitLocked) accentColor else Color.White
                     )
                 }
 
@@ -207,15 +196,15 @@ fun PlayerControlsOverlay(
                 IconButton(
                     onClick = onRewindClick,
                     modifier = Modifier
-                        .size(56.dp)
-                        .background(Color.Black.copy(alpha = 0.4f), shape = CircleShape)
+                        .size(54.dp)
+                        .background(Color.Black.copy(alpha = 0.5f), shape = CircleShape)
                         .testTag("player_rewind_button")
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Replay10,
                         contentDescription = "Retroceder 10 segundos",
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(30.dp)
                     )
                 }
 
@@ -225,7 +214,7 @@ fun PlayerControlsOverlay(
                 Box(contentAlignment = Alignment.Center) {
                     if (uiState.isBuffering) {
                         CircularProgressIndicator(
-                            color = PrimaryCyan,
+                            color = accentColor,
                             strokeWidth = 3.dp,
                             modifier = Modifier.size(68.dp)
                         )
@@ -234,11 +223,11 @@ fun PlayerControlsOverlay(
                     FilledIconButton(
                         onClick = onPlayPauseClick,
                         modifier = Modifier
-                            .size(72.dp)
+                            .size(68.dp)
                             .testTag("player_play_pause_button"),
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = PrimaryCyan,
-                            contentColor = Color.Black
+                            containerColor = accentColor,
+                            contentColor = Color.White
                         )
                     ) {
                         val icon = when {
@@ -249,7 +238,7 @@ fun PlayerControlsOverlay(
                         Icon(
                             imageVector = icon,
                             contentDescription = if (uiState.isPlaying) "Pausar" else "Reproduzir",
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(38.dp)
                         )
                     }
                 }
@@ -260,15 +249,15 @@ fun PlayerControlsOverlay(
                 IconButton(
                     onClick = onForwardClick,
                     modifier = Modifier
-                        .size(56.dp)
-                        .background(Color.Black.copy(alpha = 0.4f), shape = CircleShape)
+                        .size(54.dp)
+                        .background(Color.Black.copy(alpha = 0.5f), shape = CircleShape)
                         .testTag("player_forward_button")
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Forward10,
                         contentDescription = "Avançar 10 segundos",
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(30.dp)
                     )
                 }
             }
@@ -278,10 +267,11 @@ fun PlayerControlsOverlay(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
+                    .background(Color.Black.copy(alpha = 0.55f))
                     .navigationBarsPadding()
-                    .padding(horizontal = 20.dp, vertical = 12.dp)
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
             ) {
-                // Seekbar com Slider deslizante
+                // Seekbar com Slider deslizante sóbrio
                 Slider(
                     value = if (isSeeking) seekPositionMs else uiState.currentPositionMs.toFloat(),
                     onValueChange = {
@@ -294,9 +284,9 @@ fun PlayerControlsOverlay(
                     },
                     valueRange = 0f..uiState.durationMs.coerceAtLeast(1L).toFloat(),
                     colors = SliderDefaults.colors(
-                        thumbColor = PrimaryCyan,
-                        activeTrackColor = PrimaryCyan,
-                        inactiveTrackColor = Color.White.copy(alpha = 0.25f)
+                        thumbColor = accentColor,
+                        activeTrackColor = accentColor,
+                        inactiveTrackColor = Color.White.copy(alpha = 0.3f)
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -321,8 +311,8 @@ fun PlayerControlsOverlay(
                     Box {
                         Surface(
                             onClick = { showSpeedMenu = !showSpeedMenu },
-                            shape = RoundedCornerShape(16.dp),
-                            color = Color.White.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color.White.copy(alpha = 0.12f),
                             modifier = Modifier.testTag("player_speed_button")
                         ) {
                             Row(
@@ -332,7 +322,7 @@ fun PlayerControlsOverlay(
                                 Icon(
                                     imageVector = Icons.Rounded.Speed,
                                     contentDescription = "Velocidade",
-                                    tint = PrimaryCyan,
+                                    tint = accentColor,
                                     modifier = Modifier.size(16.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -355,7 +345,7 @@ fun PlayerControlsOverlay(
                                         Text(
                                             text = "${speed}x",
                                             fontWeight = if (uiState.playbackSpeed == speed) FontWeight.Bold else FontWeight.Normal,
-                                            color = if (uiState.playbackSpeed == speed) PrimaryCyan else MaterialTheme.colorScheme.onSurface
+                                            color = if (uiState.playbackSpeed == speed) accentColor else MaterialTheme.colorScheme.onSurface
                                         )
                                     },
                                     onClick = {
@@ -372,9 +362,6 @@ fun PlayerControlsOverlay(
     }
 }
 
-/**
- * Converte milissegundos para formato legível mm:ss ou hh:mm:ss
- */
 private fun formatTime(ms: Long): String {
     if (ms <= 0L) return "00:00"
     val hours = TimeUnit.MILLISECONDS.toHours(ms)

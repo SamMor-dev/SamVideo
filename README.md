@@ -13,6 +13,26 @@
 
 ---
 
+## 🎨 Design Sóbrio, Refinado & Ícone SVG Editável
+
+1. **Design Sóbrio & Sem Gradientes:**
+   - Visual executivo com cores sólidas e alto contraste.
+   - **Seletor de Aparência Integrado:**
+     - **Escuro (Dark):** Preto carvão neutro e sóbrio para máxima eficiência energética em telas AMOLED.
+     - **Claro (Light):** Superfícies limpas e minimalistas em off-white.
+     - **Azul Sóbrio (Slate Blue):** Tons profundos de azul ardósia sem gradientes.
+
+2. **Ícone S Vetorial em SVG:**
+   - Localizado em `sam_video_icon.svg` e `art/sam_video_icon.svg`.
+   - Projetado em camadas limpas com a letra **S** integrada a perfurações de película e um botão de Play de vídeo centralizado.
+   - 100% pronto para ser aberto e editado no **Figma, Adobe Illustrator, Inkscape ou navegadores** por qualquer pessoa ou empresa.
+
+3. **Seção 'Sobre' com Autor e Licença no Canto da Tela:**
+   - Botão de informações `(i)` no canto superior da tela inicial.
+   - Exibe o autor (**Sam Moreno**), a **Licença BSD 2-Clause** completa e especificações técnicas de decodificação e aceleração por hardware.
+
+---
+
 ## 🚀 Destaques Técnicos e Performance
 
 1. **Aceleração por Hardware Pura (Zero-Copy):**
@@ -63,7 +83,7 @@ chmod +x install_android_studio.sh
 1. Abra o **Android Studio**.
 2. Clique em **File > Open...** (ou na tela de boas-vindas, selecione **Open**).
 3. Navegue até a pasta do projeto `SamVideo` e clique em **OK**.
-4. Aguarde a sincronização automática do Gradle (leva menos de 1 minuto na primeira execução).
+4. A sincronização do Gradle ocorrerá rapidamente graças às otimizações de cache e `parallel=true` configuradas em `gradle.properties`.
 
 ---
 
@@ -88,25 +108,30 @@ Para gerar o arquivo `.apk` final para instalar manualmente em qualquer aparelho
 
 ```
 app/src/main/java/com/example/
-├── MainActivity.kt                # Ponto de entrada, suporte a PiP e intents externos
+├── MainActivity.kt                # Ponto de entrada, tema reativo, PiP e intents externos
 ├── data/
 │   └── VideoRepository.kt        # Consulta ao MediaStore e resolvedor de URIs do SAF
 ├── model/
-│   └── VideoItem.kt              # Modelo de dados de vídeo com cálculo de duração e resolução
+│   └── VideoItem.kt              # Modelo de dados com cálculo de duração e resolução
 ├── player/
 │   ├── AspectRatioMode.kt        # Modos de aspecto (FIT, ZOOM, FILL)
 │   └── PlaybackState.kt          # Estado reativo do player (posição, buffer, velocidade)
 ├── ui/
 │   ├── components/
+│   │   ├── AboutDialog.kt             # Diálogo modal com Autor (Sam Moreno) e Licença BSD 2-Clause
 │   │   ├── GestureIndicatorOverlay.kt  # Feedback visual de gestos (volume, brilho, seek)
 │   │   ├── PlayerControlsOverlay.kt    # HUD de controles com Seekbar, Aspect Ratio e PiP
+│   │   ├── ThemeSelectionDialog.kt     # Seletor de temas (Escuro, Claro, Azul Sóbrio)
 │   │   └── VideoPlayerView.kt          # Encapsulamento de SurfaceView acelerado por hardware
 │   ├── screens/
 │   │   ├── PlayerScreen.kt             # Tela de reprodução imersiva com BackHandler
-│   │   └── VideoListScreen.kt          # Seletor limpo de vídeos com busca e filtros
+│   │   └── VideoListScreen.kt          # Seletor limpo de vídeos com busca, filtros e botão About
 │   └── theme/
-│       ├── Color.kt                    # Paleta Dark cinematográfica com acentos Neon Cyan
-│       └── Theme.kt                    # Configuração de tema Material Design 3 e Edge-to-Edge
+│       ├── Color.kt                    # Paletas sólidas sem gradientes (Dark, Light, Slate Blue)
+│       ├── Theme.kt                    # Configuração de tema Material Design 3 e insets
+│       └── ThemeMode.kt                # Enum com os 3 modos de aparência visual
+sam_video_icon.svg                     # Ícone vetorial oficial editável (SVG puro)
+art/sam_video_icon.svg                 # Cópia do ícone vetorial na pasta de arte
 ```
 
 ---
