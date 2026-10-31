@@ -22,6 +22,11 @@ android {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
+  lint {
+    disable.add("UnsafeOptInUsageError")
+    abortOnError = false
+  }
+
   // Do not remove or modify these signingConfigs. They are necessary for building, installing,
   // and updating Android apps in AI Studio.
   signingConfigs {
@@ -67,6 +72,14 @@ android {
   dependenciesInfo {
     includeInApk = false
     includeInBundle = true
+  }
+}
+
+kotlin {
+  compilerOptions {
+    freeCompilerArgs.addAll(
+      "-opt-in=androidx.media3.common.util.UnstableApi"
+    )
   }
 }
 

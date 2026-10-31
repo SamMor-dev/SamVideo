@@ -91,6 +91,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
      * Configura o ExoPlayer com decodificação direta por Hardware MediaCodec
      * desligando renderizadores de extensão lentos em software.
      */
+    @androidx.media3.common.util.UnstableApi
     private fun initHardwareAcceleratedPlayer(): ExoPlayer {
         val context = getApplication<Application>()
 
