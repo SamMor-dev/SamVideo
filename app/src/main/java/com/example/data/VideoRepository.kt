@@ -3,7 +3,6 @@ package com.example.data
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import com.example.model.VideoItem
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +15,7 @@ import kotlinx.coroutines.withContext
  */
 
 /**
- * Repositório leve para consulta de vídeos locais via Android MediaStore
- * e fornecimento de amostras de demonstração.
+ * Repositório leve para consulta de vídeos locais via Android MediaStore.
  */
 class VideoRepository(private val context: Context) {
 
@@ -78,8 +76,7 @@ class VideoRepository(private val context: Context) {
                             sizeBytes = size,
                             dateModified = date,
                             width = width,
-                            height = height,
-                            isSample = false
+                            height = height
                         )
                     )
                 }
@@ -89,54 +86,6 @@ class VideoRepository(private val context: Context) {
         }
 
         videoList
-    }
-
-    /**
-     * Amostras de vídeos de teste leves para validação imediata do player
-     */
-    fun getSampleVideos(): List<VideoItem> {
-        return listOf(
-            VideoItem(
-                id = -1L,
-                uri = Uri.parse("https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_5MB.mp4"),
-                title = "Big Buck Bunny (Amostra Full HD 1080p)",
-                durationMs = 10000L,
-                sizeBytes = 5238714L,
-                width = 1920,
-                height = 1080,
-                isSample = true
-            ),
-            VideoItem(
-                id = -2L,
-                uri = Uri.parse("https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4"),
-                title = "View From A Blue Moon (Trailer Oficial HD)",
-                durationMs = 180000L,
-                sizeBytes = 72827883L,
-                width = 1280,
-                height = 720,
-                isSample = true
-            ),
-            VideoItem(
-                id = -3L,
-                uri = Uri.parse("https://storage.googleapis.com/exoplayer-test-media-1/mp4/android-screens-10s.mp4"),
-                title = "Android Screens (Demonstração ExoPlayer)",
-                durationMs = 10000L,
-                sizeBytes = 1854368L,
-                width = 1280,
-                height = 720,
-                isSample = true
-            ),
-            VideoItem(
-                id = -4L,
-                uri = Uri.parse("https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4"),
-                title = "Sintel (Amostra Open Source)",
-                durationMs = 10000L,
-                sizeBytes = 1047954L,
-                width = 1280,
-                height = 720,
-                isSample = true
-            )
-        )
     }
 
     /**
@@ -167,8 +116,7 @@ class VideoRepository(private val context: Context) {
             id = System.currentTimeMillis(),
             uri = uri,
             title = displayName,
-            sizeBytes = sizeBytes,
-            isSample = false
+            sizeBytes = sizeBytes
         )
     }
 }

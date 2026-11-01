@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit
  * @param dateModified Data de modificação em epoch segundos
  * @param width Largura em pixels (se disponível)
  * @param height Altura em pixels (se disponível)
- * @param isSample Indica se é um vídeo demonstrativo pré-carregado
  */
 data class VideoItem(
     val id: Long,
@@ -31,8 +30,7 @@ data class VideoItem(
     val sizeBytes: Long = 0L,
     val dateModified: Long = 0L,
     val width: Int = 0,
-    val height: Int = 0,
-    val isSample: Boolean = false
+    val height: Int = 0
 ) {
     /**
      * Retorna a duração formatada em mm:ss ou hh:mm:ss

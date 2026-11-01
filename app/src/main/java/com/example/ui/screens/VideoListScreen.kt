@@ -90,16 +90,12 @@ fun VideoListScreen(
 ) {
     val context = LocalContext.current
     val localVideos by viewModel.localVideos.collectAsState()
-    val sampleVideos by viewModel.sampleVideos.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val currentTheme by viewModel.themeMode.collectAsState()
 
     // Controle de diálogos
     var showAboutDialog by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
-
-    // 0 = Todos, 1 = Meus Vídeos, 2 = Amostras
-    var selectedTab by remember { mutableIntStateOf(0) }
 
     // Verificação de permissões do Android
     val permissionToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -141,17 +137,12 @@ fun VideoListScreen(
         }
     }
 
-    // Combina e filtra vídeos de acordo com a aba e busca
-    val displayedVideos = remember(localVideos, sampleVideos, selectedTab, searchQuery) {
-        val baseList = when (selectedTab) {
-            1 -> localVideos
-            2 -> sampleVideos
-            else -> localVideos + sampleVideos
-        }
+    // Filtra vídeos locais de acordo com a busca
+    val displayedVideos = remember(localVideos, searchQuery) {
         if (searchQuery.isBlank()) {
-            baseList
+            localVideos
         } else {
-            baseList.filter { it.title.contains(searchQuery, ignoreCase = true) }
+            localVideos.filter { it.title.contains(searchQuery, ignoreCase = true) }
         }
     }
 
@@ -405,50 +396,6 @@ fun VideoListScreen(
             )
         )
 
-        // === FILTROS DE CATEGORIA SÓBRIOS ===
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            FilterChip(
-                selected = selectedTab == 0,
-                onClick = { selectedTab = 0 },
-                label = { Text("Todos (${localVideos.size + sampleVideos.size})", fontSize = 12.sp) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primary,
-                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            )
-
-            FilterChip(
-                selected = selectedTab == 1,
-                onClick = { selectedTab = 1 },
-                label = { Text("Do Aparelho (${localVideos.size})", fontSize = 12.sp) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primary,
-                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            )
-
-            FilterChip(
-                selected = selectedTab == 2,
-                onClick = { selectedTab = 2 },
-                label = { Text("Amostras HD (${sampleVideos.size})", fontSize = 12.sp) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primary,
-                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            )
-        }
-
         Spacer(modifier = Modifier.height(6.dp))
 
         // === LISTA DE VÍDEOS ===
@@ -475,7 +422,7 @@ fun VideoListScreen(
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "Toque em 'Abrir Vídeo do Aparelho' ou teste uma das amostras pré-carregadas.",
+                        text = "Toque em 'Abrir Vídeo do Aparelho' para carregar seus vídeos locais.",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         textAlign = TextAlign.Center
@@ -579,21 +526,6 @@ private fun VideoItemCard(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (video.isSample) {
-                        Surface(
-                            shape = RoundedCornerShape(4.dp),
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
-                            modifier = Modifier.padding(end = 6.dp)
-                        ) {
-                            Text(
-                                text = "Amostra HD",
-                                color = MaterialTheme.colorScheme.primary,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
-                    }
 
                     if (video.resolutionLabel.isNotEmpty()) {
                         Surface(

@@ -57,10 +57,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private val _localVideos = MutableStateFlow<List<VideoItem>>(emptyList())
     val localVideos: StateFlow<List<VideoItem>> = _localVideos.asStateFlow()
 
-    // Lista de amostras de demonstração para teste rápido
-    private val _sampleVideos = MutableStateFlow<List<VideoItem>>(emptyList())
-    val sampleVideos: StateFlow<List<VideoItem>> = _sampleVideos.asStateFlow()
-
     // Indicador de carregamento da lista
     private val _isLoadingVideos = MutableStateFlow(false)
     val isLoadingVideos: StateFlow<Boolean> = _isLoadingVideos.asStateFlow()
@@ -83,7 +79,6 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     private var controlsTimeoutJob: Job? = null
 
     init {
-        _sampleVideos.value = repository.getSampleVideos()
         loadVideos()
     }
 
