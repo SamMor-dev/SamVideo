@@ -59,7 +59,8 @@ import com.example.R
 
 @Composable
 fun AboutDialog(
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    onOpenLicenses: () -> Unit
 ) {
     var isLicenseExpanded by remember { mutableStateOf(false) }
 
@@ -273,7 +274,23 @@ fun AboutDialog(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                androidx.compose.material3.OutlinedButton(
+                    onClick = onOpenLicenses,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Code,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Ver Licenças de Código Aberto", fontWeight = FontWeight.SemiBold)
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Button(
                     onClick = onDismissRequest,

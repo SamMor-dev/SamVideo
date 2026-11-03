@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit
  * @param dateModified Data de modificação em epoch segundos
  * @param width Largura em pixels (se disponível)
  * @param height Altura em pixels (se disponível)
+ * @param isFavorite Se o vídeo está marcado como favorito
  */
 data class VideoItem(
     val id: Long,
@@ -30,8 +31,29 @@ data class VideoItem(
     val sizeBytes: Long = 0L,
     val dateModified: Long = 0L,
     val width: Int = 0,
-    val height: Int = 0
+    val height: Int = 0,
+    val isFavorite: Boolean = false
 ) {
+    /**
+     * Retorna a extensão de formato do vídeo (MP4, MKV, WEBM, etc.)
+     */
+    val formatExtension: String
+        get() {
+            val lower = title.lowercase()
+            return when {
+                lower.endsWith(".mp4") -> "MP4"
+                lower.endsWith(".mkv") -> "MKV"
+                lower.endsWith(".webm") -> "WEBM"
+                lower.endsWith(".avi") -> "AVI"
+                lower.endsWith(".3gp") -> "3GP"
+                lower.endsWith(".mov") -> "MOV"
+                else -> {
+                    val ext = uri.lastPathSegment?.substringAfterLast('.', "")?.uppercase()
+                    if (!ext.isNullOrBlank()) ext else "MP4"
+                }
+            }
+        }
+
     /**
      * Retorna a duração formatada em mm:ss ou hh:mm:ss
      */

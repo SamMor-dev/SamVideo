@@ -38,7 +38,8 @@ import com.example.viewmodel.PlayerViewModel
 
 enum class CurrentScreen {
     VIDEO_LIST,
-    PLAYER
+    PLAYER,
+    OPEN_SOURCE_LICENSES
 }
 
 class MainActivity : ComponentActivity() {
@@ -71,6 +72,9 @@ class MainActivity : ComponentActivity() {
                                     viewModel = playerViewModel,
                                     onVideoSelected = {
                                         currentScreen = CurrentScreen.PLAYER
+                                    },
+                                    onOpenLicenses = {
+                                        currentScreen = CurrentScreen.OPEN_SOURCE_LICENSES
                                     }
                                 )
                             }
@@ -79,6 +83,13 @@ class MainActivity : ComponentActivity() {
                                     viewModel = playerViewModel,
                                     onNavigateBack = {
                                         playerViewModel.player.pause()
+                                        currentScreen = CurrentScreen.VIDEO_LIST
+                                    }
+                                )
+                            }
+                            CurrentScreen.OPEN_SOURCE_LICENSES -> {
+                                com.example.ui.screens.OpenSourceLicensesScreen(
+                                    onNavigateBack = {
                                         currentScreen = CurrentScreen.VIDEO_LIST
                                     }
                                 )

@@ -185,12 +185,27 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         _uiState.update {
             it.copy(
                 videoTitle = video.title,
+                currentVideo = video,
                 errorMessage = null,
                 currentPositionMs = 0L,
                 durationMs = video.durationMs
             )
         }
         showControlsWithTimeout()
+    }
+
+    /**
+     * Alterna o estado de favorito de um vídeo.
+     */
+    fun toggleFavorite(video: VideoItem) {
+        _localVideos.update { list ->
+            list.map { if (it.id == video.id) it.copy(isFavorite = !it.isFavorite) else it }
+        }
+        if (_uiState.value.currentVideo?.id == video.id) {
+            _uiState.update { state ->
+                state.copy(currentVideo = state.currentVideo?.copy(isFavorite = !state.currentVideo.isFavorite))
+            }
+        }
     }
 
     /**

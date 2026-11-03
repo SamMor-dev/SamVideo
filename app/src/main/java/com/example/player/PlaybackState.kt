@@ -1,6 +1,7 @@
 package com.example.player
 
 import androidx.media3.common.Player
+import com.example.model.VideoItem
 
 /*
  * Copyright (c) 2026, Sam Moreno.
@@ -19,6 +20,7 @@ data class PlaybackUiState(
     val bufferedPositionMs: Long = 0L,
     val playbackSpeed: Float = 1.0f,
     val videoTitle: String = "",
+    val currentVideo: VideoItem? = null,
     val aspectRatioMode: AspectRatioMode = AspectRatioMode.FIT,
     val isControlsVisible: Boolean = true,
     val errorMessage: String? = null,
